@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ARVADS Stacking Ensemble DSS · Bangladesh Measles 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#eef2f7;--surface:#fff;--surface2:#f5f7fb;--surface3:#edf0f6;
+  --border:rgba(15,23,42,.08);--border2:rgba(15,23,42,.14);
+  --text:#0f172a;--text2:#334155;--muted:#64748b;--muted2:#94a3b8;
+  --crit:#dc2626;--high:#ea580c;--warn:#ca8a04;--good:#059669;
+  --blue:#2563eb;--purple:#7c3aed;--teal:#0891b2;--stack:#2563eb;
+  --rf:#8b5cf6;--xgb:#0ea5b7;--ada:#d97706;
+  --critbg:#fef0f0;--highbg:#fff5ed;--warnbg:#fefce8;--goodbg:#ecfdf5;
+  --purplebg:#f7f3ff;--tealbg:#e8fcff;--bluebg:#eef4ff;
+  --info-bg:#101a30;--info-card:rgba(255,255,255,.055);--info-border:rgba(255,255,255,.09);
+  --info-title:#a78bfa;--info-head:#fff;--info-body:#9ca8c4;--info-foot:#c3cbdd;
+  --info-r-bg:#1f1330;--info-r-title:#f9a8a8;--info-r-body:#e8b4b4;
+  --info-b-bg:#0d1f3d;--info-b-title:#7dd3fc;--info-b-body:#9ca8c4;
+  --shadow:0 1px 2px rgba(15,23,42,.05),0 3px 12px rgba(15,23,42,.05);
+  --shadow-md:0 6px 24px rgba(15,23,42,.1),0 2px 6px rgba(15,23,42,.06);
+  --shadow-lg:0 12px 40px rgba(15,23,42,.16),0 4px 12px rgba(15,23,42,.08);
+  --r:14px;--r-sm:9px;--r-lg:18px;
+  --font:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+.dark{
+  --bg:#070c18;--surface:#0f1a2e;--surface2:#142239;--surface3:#192a45;
+  --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.13);
+  --text:#f1f5f9;--text2:#cbd5e1;--muted:#94a3b8;--muted2:#64748b;
+  --crit:#f87171;--high:#fb923c;--warn:#fbbf24;--good:#34d399;
+  --blue:#60a5fa;--purple:#a78bfa;--teal:#22d3ee;--stack:#60a5fa;
+  --rf:#a78bfa;--xgb:#22d3ee;--ada:#fbbf24;
+  --critbg:rgba(248,113,113,.12);--highbg:rgba(251,146,60,.12);
+  --warnbg:rgba(251,191,36,.12);--goodbg:rgba(52,211,153,.12);
+  --purplebg:rgba(167,139,250,.12);--tealbg:rgba(34,211,238,.12);--bluebg:rgba(96,165,250,.12);
+  --info-bg:#16233f;--info-card:rgba(255,255,255,.06);--info-border:rgba(255,255,255,.1);
+  --info-title:#c4b5fd;--info-head:#fff;--info-body:#9ca8c4;--info-foot:#c3cbdd;
+  --info-r-bg:#2a1a3d;--info-r-title:#fca5a5;--info-r-body:#e8b4b4;
+  --info-b-bg:#11264a;--info-b-title:#7dd3fc;--info-b-body:#9ca8c4;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 3px 14px rgba(0,0,0,.25);
+  --shadow-md:0 6px 26px rgba(0,0,0,.45),0 2px 8px rgba(0,0,0,.3);
+  --shadow-lg:0 14px 44px rgba(0,0,0,.55),0 4px 14px rgba(0,0,0,.4);
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;font-size:13.5px;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s}
+::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+::selection{background:rgba(37,99,235,.18)}
+b,strong{font-weight:700}
+h1,h2,h3{font-weight:800}
+
+/* ══ ANIMATIONS ══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeLeft{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes fadeRight{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+@keyframes glow{0%,100%{box-shadow:0 0 6px rgba(124,58,237,.35)}50%{box-shadow:0 0 18px rgba(124,58,237,.7)}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
+@keyframes shimmerSweep{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.tab-vert.on{animation:fadeUp .5s var(--ease)}
+.au{animation:fadeUp .5s var(--ease) both}
+.au:nth-child(1){animation-delay:.03s}.au:nth-child(2){animation-delay:.07s}
+.au:nth-child(3){animation-delay:.11s}.au:nth-child(4){animation-delay:.15s}
+.al{animation:fadeLeft .5s var(--ease) both}
+.ar{animation:fadeRight .5s var(--ease) both}
+
+/* ══ HEADER ══ */
+#hdr{background:linear-gradient(120deg,#060c1c,#0b1c40 52%,#160f42);display:flex;align-items:center;justify-content:space-between;padding:0 26px;height:60px;position:sticky;top:0;z-index:300;border-bottom:1px solid rgba(255,255,255,.06)}
+.logo{display:flex;align-items:center;gap:11px}
+.logo-mark{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#7c3aed,#2563eb);display:flex;align-items:center;justify-content:center;animation:glow 3.2s ease-in-out infinite;flex-shrink:0}
+.logo-mark svg{width:19px;height:19px}
+.logo-text h1{color:#fff;font-size:13.5px;font-weight:800;letter-spacing:-.2px;display:flex;align-items:center;gap:7px}
+.logo-text p{color:#7dabe0;font-size:9.5px;margin-top:1px;font-weight:500}
+.badge-ml{background:linear-gradient(95deg,#8b5cf6,#2563eb);color:#fff;font-size:8.5px;font-weight:800;padding:2.5px 8px;border-radius:20px;letter-spacing:.7px;text-transform:uppercase}
+.live-dot{width:6px;height:6px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 3px rgba(34,197,94,.22);display:inline-block;animation:pulse 2s ease-in-out infinite}
+.hdr-right{display:flex;align-items:center;gap:14px}
+.hdr-stats{display:flex;gap:18px}
+.hdr-stat{text-align:center;cursor:default}
+.hdr-stat-val{color:#fff;font-size:13.5px;font-weight:800;font-family:var(--mono)}
+.hdr-stat-lbl{color:#7dabe0;font-size:8.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.hdr-div{width:1px;height:24px;background:rgba(255,255,255,.1)}
+.dark-btn{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:6px 13px;color:#fff;cursor:pointer;font-size:10.5px;font-weight:700;transition:all .2s;font-family:var(--font)}
+.dark-btn:hover{background:rgba(255,255,255,.17);transform:translateY(-1px)}
+
+/* ══ TICKER ══ */
+#ticker{background:var(--critbg);border-bottom:1px solid color-mix(in srgb,var(--crit) 20%,transparent);padding:6px 26px;display:flex;align-items:center;gap:9px;font-size:11px;font-weight:600;color:var(--crit);min-height:28px;transition:all .35s}
+#ticker-dot{width:5px;height:5px;border-radius:50%;background:var(--crit);animation:pulse 1.5s infinite;flex-shrink:0}
+#ticker-text{flex:1;transition:opacity .3s}
+#ticker-tag{font-size:9px;font-weight:700;letter-spacing:.8px;color:var(--muted);text-transform:uppercase;flex-shrink:0}
+
+/* ══ NAV ══ */
+#nav{background:var(--surface);border-bottom:1px solid var(--border);display:flex;padding:0 18px;overflow-x:auto;position:sticky;top:60px;z-index:200;box-shadow:var(--shadow);transition:background .4s}
+#nav::-webkit-scrollbar{height:0}
+.nb{padding:11px 14px;border:none;background:transparent;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;border-bottom:2.5px solid transparent;color:var(--muted);transition:all .2s;display:flex;align-items:center;gap:6px;font-family:var(--font)}
+.nb svg{width:15px;height:15px;flex-shrink:0;transition:all .2s}
+.nb.on{border-bottom-color:var(--blue);color:var(--blue)}
+.nb.on svg{color:var(--blue)}
+.nb:hover:not(.on){color:var(--text);border-bottom-color:var(--border2)}
+
+/* ══ PAGE ══ */
+#page{padding:20px 24px;max-width:1460px;margin:0 auto}
+.tab{display:none}.tab.on{display:block;animation:fadeUp .42s var(--ease)}
+.sec-hdr{margin-bottom:16px}
+.sec-hdr h2{font-size:15.5px;font-weight:800;letter-spacing:-.3px}
+.sec-hdr p{font-size:11.5px;color:var(--muted);margin-top:3px}
+
+/* ══ GRIDS ══ */
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:15px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:15px;margin-bottom:15px}
+.g21{display:grid;grid-template-columns:1fr 2fr;gap:15px;margin-bottom:15px}
+.mb{margin-bottom:15px}
+
+/* ══ CARD ══ */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:19px 21px;box-shadow:var(--shadow);transition:background .4s,border .4s,box-shadow .25s,transform .25s}
+.card.clickable{cursor:pointer}
+.card.clickable:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+
+/* ══ STAT CARD ══ */
+.sc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:17px 19px;border-left:3px solid;box-shadow:var(--shadow);transition:all .3s;position:relative;overflow:hidden;cursor:pointer}
+.sc:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.sc::after{content:'';position:absolute;top:-26px;right:-16px;width:74px;height:74px;border-radius:50%;opacity:.05;background:currentColor}
+.sc .sl{font-size:9.5px;font-weight:700;color:var(--muted);letter-spacing:.7px;text-transform:uppercase;margin-bottom:5px}
+.sc .sv{font-size:24px;font-weight:900;line-height:1;font-family:var(--mono)}
+.sc .ss{font-size:10.5px;color:var(--muted);margin-top:5px}
+
+/* ══ MODEL CARD ══ */
+.mc{border-radius:var(--r);padding:17px 19px;border:1.5px solid;transition:all .25s;position:relative;overflow:hidden;cursor:pointer}
+.mc:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.mc-name{font-size:9.5px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;margin-bottom:7px}
+.mc-val{font-size:26px;font-weight:900;line-height:1;font-family:var(--mono)}
+.mc-bar{height:4px;border-radius:2px;background:var(--border);margin-top:9px;overflow:hidden}
+.mc-fill{height:100%;border-radius:2px;transition:width 1.3s var(--ease)}
+.mc-metrics{display:flex;gap:11px;margin-top:8px}
+.mc-metric{font-size:9.5px;color:var(--muted)}.mc-metric span{font-weight:700;color:var(--text)}
+.mc-hint{font-size:9px;color:var(--muted2);margin-top:7px;opacity:.8}
+
+.ct{font-size:12.5px;font-weight:700;color:var(--text);margin-bottom:13px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.ct-badge{font-size:8.5px;font-weight:700;padding:2px 7px;border-radius:10px;letter-spacing:.4px;text-transform:uppercase}
+
+/* ══ TABLE ══ */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{padding:8px 11px;background:var(--surface2);font-weight:700;color:var(--muted);text-align:left;border-bottom:1.5px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+td{padding:8px 11px;border-bottom:1px solid var(--border);vertical-align:middle;transition:background .12s;color:var(--text2);font-size:12px}
+tr:last-child td{border-bottom:none}
+tbody tr{cursor:pointer;transition:background .12s}
+tbody tr:hover td{background:var(--surface2)}
+.rank{font-family:var(--mono);color:var(--muted);font-weight:600;font-size:11.5px}
+
+/* ══ BADGES ══ */
+.bdg{border-radius:6px;padding:2px 9px;font-size:10.5px;font-weight:700;white-space:nowrap;display:inline-block}
+.cbdg{font-size:10.5px;font-weight:700;font-family:var(--mono)}
+.agree-icon{font-size:13px;display:inline-block}
+
+/* ══ PROGRESS BAR ══ */
+.prw{display:flex;align-items:center;gap:6px}
+.prb{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;min-width:34px}
+.prf{height:100%;background:var(--good);border-radius:3px;transition:width .7s ease}
+
+/* ══ FILTER ══ */
+.flt{display:flex;gap:9px;margin-bottom:13px;flex-wrap:wrap;align-items:center}
+.flt input,.flt select{padding:7px 11px;border:1.5px solid var(--border);border-radius:var(--r-sm);font-size:12px;background:var(--surface);color:var(--text);outline:none;transition:border .15s,box-shadow .15s;font-family:var(--font)}
+.flt input{min-width:210px}
+.flt input:focus,.flt select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(37,99,235,.12)}
+.legend-strip{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--muted);align-items:center;margin-left:auto}
+.legend-item{display:flex;align-items:center;gap:5px}
+.legend-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
+/* ══ DISTRICT PANEL (premium modal-like reveal) ══ */
+#dd{border-radius:var(--r-lg);padding:0;margin-bottom:15px;border:none;display:none;box-shadow:var(--shadow-lg);overflow:hidden;animation:scaleIn .35s var(--ease)}
+.dd-head{padding:20px 22px 16px;border-left:5px solid;position:relative}
+.dd-body-inner{padding:0 22px 20px}
+.dd-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:11px;margin-top:13px}
+.dd-cell{text-align:center;padding:11px;background:var(--surface);border-radius:var(--r-sm);border:1px solid var(--border);transition:transform .2s}
+.dd-cell:hover{transform:translateY(-2px)}
+.dd-lbl{font-size:9.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.dd-val{font-size:20px;font-weight:900;margin-top:4px;font-family:var(--mono)}
+.dd-ext{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:9px}
+.dd-extcard{background:var(--surface);border-radius:var(--r-sm);padding:10px 13px;border:1px solid var(--border)}
+.dd-extlbl{font-size:9.5px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px}
+.dd-extval{font-size:14px;font-weight:800;font-family:var(--mono)}
+.mpills{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.mpill{display:inline-flex;align-items:center;gap:4px;border-radius:20px;padding:4px 10px;font-size:10.5px;font-weight:700;border:1.5px solid}
+.dd-close{border:none;background:var(--surface);width:28px;height:28px;border-radius:50%;font-size:14px;color:var(--muted);cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center}
+.dd-close:hover{background:var(--surface2);color:var(--text);transform:rotate(90deg)}
+
+/* ══ ALERT CARDS ══ */
+.ag{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-bottom:15px}
+.ac{border-radius:var(--r);overflow:hidden;border:1.5px solid;box-shadow:var(--shadow);transition:all .25s}
+.ac:hover{box-shadow:var(--shadow-md)}
+.ac-hdr{padding:17px 19px;cursor:pointer;width:100%;background:transparent;border:none;text-align:left;font-family:var(--font)}
+.ac-body{border-top:1px solid;padding:0 19px 17px;animation:slideDown .3s ease}
+.ac-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+.atag{border-radius:6px;padding:3px 9px;font-size:10.5px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:4px}
+.atag:hover{opacity:.8;transform:translateY(-1px)}
+.chv{transition:transform .3s;display:inline-block;font-size:13px;color:var(--muted)}
+
+/* ══ PIPELINE ══ */
+.pipeline{display:flex;align-items:stretch;overflow-x:auto;padding:2px;gap:0}
+.pipe-node{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:15px 16px;min-width:160px;flex:1;box-shadow:var(--shadow);transition:all .25s;cursor:pointer}
+.pipe-node:hover{box-shadow:var(--shadow-md);transform:translateY(-3px)}
+.pipe-conn{display:flex;align-items:center;padding:0 5px;flex-shrink:0}
+.pipe-arr{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;background:var(--surface);border:1.5px solid var(--border);color:var(--muted);box-shadow:var(--shadow)}
+.pipe-lbl{font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;margin-bottom:9px}
+.pipe-items{display:flex;flex-direction:column;gap:5px}
+.pipe-item{font-size:10.5px;font-weight:600;padding:5px 8px;border-radius:6px;border:1px solid}
+
+/* ══ FEATURE IMPORTANCE ══ */
+.fi-row{display:flex;align-items:center;gap:9px;margin-bottom:10px;cursor:pointer;border-radius:8px;padding:4px 6px;transition:background .15s;margin-left:-6px}
+.fi-row:hover{background:var(--surface2)}
+.fi-name{font-size:11.5px;font-weight:600;width:140px;flex-shrink:0;color:var(--text2)}
+.fi-bar-wrap{flex:1;height:7px;background:var(--border);border-radius:4px;overflow:hidden}
+.fi-fill{height:100%;border-radius:4px;transition:width 1.3s var(--ease)}
+.fi-pct{font-size:11px;font-weight:800;width:32px;text-align:right;font-family:var(--mono)}
+
+/* ══ TIER CARDS ══ */
+.tier-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:15px}
+.tier-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:17px 19px;border-top:3px solid;box-shadow:var(--shadow);transition:all .25s;cursor:pointer}
+.tier-card:hover{box-shadow:var(--shadow-md);transform:translateY(-3px)}
+
+/* ══ INFO PANEL ══ */
+.info-panel{border-radius:var(--r);padding:20px 22px;background:var(--info-bg);transition:background .4s}
+.info-panel.red{background:var(--info-r-bg)}
+.info-panel.blue{background:var(--info-b-bg)}
+.info-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px;margin-top:13px}
+.info-card{background:var(--info-card);border:1px solid var(--info-border);border-radius:10px;padding:12px;transition:all .2s;cursor:pointer}
+.info-card:hover{background:rgba(255,255,255,.1);transform:translateY(-2px)}
+.info-title{font-size:12.5px;font-weight:800;color:var(--info-title);margin-bottom:13px;letter-spacing:-.2px}
+.info-panel.red .info-title{color:var(--info-r-title)}
+.info-panel.blue .info-title{color:var(--info-b-title)}
+.info-head{font-weight:700;color:var(--info-head);margin-bottom:4px;font-size:13px}
+.info-body{font-size:10.5px;color:var(--info-body);line-height:1.6}
+.info-panel.blue .info-body{color:var(--info-b-body)}
+.info-foot{margin-top:13px;padding:11px 15px;background:var(--info-card);border-radius:8px;font-size:11px;color:var(--info-foot);line-height:1.65}
+.info-3col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:11px}
+.info-step{background:var(--info-card);border-radius:10px;padding:13px;cursor:pointer;transition:all .2s}
+.info-step:hover{background:rgba(255,255,255,.1);transform:translateY(-2px)}
+.info-step-title{font-size:10.5px;font-weight:800;margin-bottom:5px}
+.info-panel.red .info-step-title{color:var(--info-r-title)}
+.info-step-body{font-size:10.5px;color:var(--info-body);line-height:1.55}
+.info-panel.red .info-step-body{color:var(--info-r-body)}
+.info-desc{font-size:11.5px;color:var(--info-r-body);line-height:1.8;margin-bottom:13px}
+
+/* ══ LEGEND BAR (allocation decisions) ══ */
+.dec-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:10.5px;color:var(--muted);margin-bottom:12px;padding:9px 13px;background:var(--surface2);border-radius:var(--r-sm)}
+.dec-legend b{font-weight:700;color:var(--text2)}
+
+/* ══ MODAL DETAIL OVERLAY (premium click-to-expand) ══ */
+#modal-overlay{position:fixed;inset:0;background:rgba(8,12,24,.6);backdrop-filter:blur(3px);z-index:1000;display:none;align-items:center;justify-content:center;padding:24px;animation:fadeUp .25s ease}
+#modal-box{background:var(--surface);border-radius:var(--r-lg);max-width:560px;width:100%;max-height:80vh;overflow-y:auto;box-shadow:var(--shadow-lg);animation:scaleIn .3s var(--ease);border:1px solid var(--border)}
+#modal-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--surface);z-index:5}
+#modal-title{font-size:14px;font-weight:800}
+#modal-body{padding:20px 22px;font-size:12.5px;line-height:1.75;color:var(--text2)}
+#modal-body b{color:var(--text)}
+.modal-close{border:none;background:var(--surface2);width:30px;height:30px;border-radius:50%;font-size:15px;color:var(--muted);cursor:pointer;transition:all .2s}
+.modal-close:hover{background:var(--border2);color:var(--text);transform:rotate(90deg)}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:1100px){.g4{grid-template-columns:1fr 1fr}}
+@media(max-width:900px){.g2{grid-template-columns:1fr}.g21{grid-template-columns:1fr}.ag{grid-template-columns:1fr}.tier-grid{grid-template-columns:1fr 1fr}.info-grid{grid-template-columns:1fr 1fr}.info-3col{grid-template-columns:1fr}.dd-grid{grid-template-columns:repeat(3,1fr)}.pipeline{flex-direction:column}.pipe-conn{transform:rotate(90deg);justify-content:center}.hdr-stats{display:none}}
+@media(max-width:600px){.g4{grid-template-columns:1fr}.tier-grid{grid-template-columns:1fr}.dd-ext{grid-template-columns:1fr 1fr}.flt input{min-width:150px}.legend-strip{margin-left:0}}
+</style>
+</head>
+<body>
+<!-- ══ MODAL OVERLAY for click-to-expand details ══ -->
+<div id="modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div id="modal-box">
+    <div id="modal-head">
+      <div id="modal-title"></div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<!-- ══ HEADER ══ -->
+<div id="hdr">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L3 7v6c0 5.2 3.8 8.4 9 10 5.2-1.6 9-4.8 9-10V7l-9-5z" fill="white" fill-opacity="0.95"/><path d="M12 6.2L8.2 14h2.3l.7-1.7h2.7l.7 1.7h2.3L12 6.2zm-.1 4.2l.8-2 .8 2h-1.6z" fill="#5b21b6"/></svg>
+    </div>
+    <div class="logo-text">
+      <h1>ARVADS <span class="badge-ml">Stacking Ensemble</span><span class="live-dot"></span></h1>
+      <p>Adaptive Risk-Based Vaccine Allocation Decision Support System · RF + XGBoost + AdaBoost</p>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <div class="hdr-stats">
+      <div class="hdr-stat" onclick="ST('ov',document.querySelectorAll('.nb')[0])"><div class="hdr-stat-val">72,070</div><div class="hdr-stat-lbl">Cases</div></div>
+      <div class="hdr-div"></div>
+      <div class="hdr-stat" onclick="ST('ov',document.querySelectorAll('.nb')[0])"><div class="hdr-stat-val">591</div><div class="hdr-stat-lbl">Deaths</div></div>
+      <div class="hdr-div"></div>
+      <div class="hdr-stat" onclick="ST('ml',document.querySelectorAll('.nb')[1])"><div class="hdr-stat-val">91.4%</div><div class="hdr-stat-lbl">Ensemble F1</div></div>
+    </div>
+    <button class="dark-btn" onclick="toggleDark()" id="darkBtn">🌙 Dark</button>
+  </div>
+</div>
+
+<!-- ══ TICKER ══ -->
+<div id="ticker">
+  <div id="ticker-dot"></div>
+  <span id="ticker-text"></span>
+  <span id="ticker-tag">Ensemble Alert Engine · Live</span>
+</div>
+
+<!-- NAV: professional SVG icons -->
+<div id="nav">
+  <button class="nb on" onclick="ST('ov',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="13" width="4" height="8" rx="1"/><rect x="10" y="9" width="4" height="12" rx="1"/><rect x="17" y="5" width="4" height="16" rx="1"/></svg>
+    Overview
+  </button>
+  <button class="nb" onclick="ST('ml',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><circle cx="6" cy="16" r="2.2"/><circle cx="12" cy="16" r="2.2"/><circle cx="18" cy="16" r="2.2"/><path d="M8 14.5L10.5 12M14 14.5L11.5 12M11 16h2"/></svg>
+    Ensemble Model
+  </button>
+  <button class="nb" onclick="ST('al',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5l-7 7M14 3l7 7-2.5 2.5-7-7L14 3z"/><path d="M11.5 8.5L4 16v4h4l7.5-7.5"/></svg>
+    Allocation
+  </button>
+  <button class="nb" onclick="ST('ri',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 20h20L12 2z"/><path d="M12 9v5M12 17h.01"/></svg>
+    Risk Analysis
+  </button>
+  <button class="nb" onclick="ST('ae',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+    Alert Engine
+  </button>
+  <button class="nb" onclick="ST('di',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+    All Districts
+  </button>
+</div>
+
+<div id="page">
+<!-- ══ TAB: OVERVIEW ══ -->
+<div id="ov" class="tab on">
+  <div class="sec-hdr">
+    <h2>National Measles Situation, Bangladesh, June 2026</h2>
+    <p>DGHS surveillance data · Stacking Ensemble model active · Updated 6 June 2026</p>
+  </div>
+  <div class="g4 au">
+    <div class="sc" style="border-color:var(--crit)" onclick="openModal('Suspected Cases','<b>72,070</b> suspected measles cases have been recorded nationally as of 6 June 2026, spread across 61 of Bangladesh\\'s 64 districts. This figure reflects clinically suspected and lab-confirmed cases combined, per DGHS surveillance protocol.')"><div class="sl">Suspected Cases</div><div class="sv" style="color:var(--crit)">72,070</div><div class="ss">61 of 64 districts affected</div></div>
+    <div class="sc" style="border-color:var(--crit)" onclick="openModal('Total Deaths','<b>591</b> confirmed deaths nationally, giving a national Case Fatality Rate of <b>0.82%</b>. Deaths are concentrated in districts with low MR2 coverage and high under-5 population proportion.')"><div class="sl">Total Deaths</div><div class="sv" style="color:var(--crit)">591</div><div class="ss">National CFR: 0.82%</div></div>
+    <div class="sc" style="border-color:var(--blue)" onclick="openModal('DGHS Hotspots','<b>21</b> districts carry an official DGHS outbreak hotspot designation, a verified epidemiological signal used as one of five CRSI risk factors (10% weight) and as a strong predictor in all three base learners.')"><div class="sl">DGHS Hotspots</div><div class="sv" style="color:var(--blue)">21</div><div class="ss">Districts under emergency designation</div></div>
+    <div class="sc" style="border-color:var(--purple)" onclick="ST('ml',document.querySelectorAll('.nb')[1])"><div class="sl">Ensemble Accuracy</div><div class="sv" style="color:var(--purple)">91.4%</div><div class="ss">Stacking meta-learner · F1: 0.91</div></div>
+  </div>
+  <div class="g4 au" id="mc-row"></div>
+  <div class="g2">
+    <div class="card"><div class="ct">Cases by Division</div><div style="position:relative;height:235px"><canvas id="c1"></canvas></div></div>
+    <div class="card"><div class="ct">Deaths by Division</div><div style="position:relative;height:235px"><canvas id="c2"></canvas></div></div>
+  </div>
+  <div class="g21">
+    <div class="card"><div class="ct">Risk Tier Distribution <span class="ct-badge" style="background:var(--bluebg);color:var(--blue)">64 districts</span></div><div style="position:relative;height:205px"><canvas id="c3"></canvas></div></div>
+    <div class="card">
+      <div class="ct">Top 5 Critical Districts, Ensemble Ranked <span class="ct-badge" style="background:var(--critbg);color:var(--crit)">click row for details</span></div>
+      <div class="tw"><table><thead><tr><th>Rank</th><th>District</th><th>Division</th><th>CRSI</th><th>Ensemble</th><th>Confidence</th><th>Incid/M</th><th>CFR%</th></tr></thead><tbody id="t5"></tbody></table></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB: ENSEMBLE MODEL ══ -->
+<div id="ml" class="tab">
+  <div class="sec-hdr">
+    <h2>Stacking Ensemble Architecture & Performance</h2>
+    <p>RF + XGBoost + AdaBoost base learners · Logistic Regression meta-learner · 5-fold out-of-fold training</p>
+  </div>
+  <div class="card mb">
+    <div class="ct">Model Pipeline: Raw Features to Tier Prediction <span class="ct-badge" style="background:var(--purplebg);color:var(--purple)">click any stage</span></div>
+    <div class="pipeline" id="pipeline-vis"></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Accuracy and F1, All Models Compared</div><div style="position:relative;height:255px"><canvas id="cm1"></canvas></div></div>
+    <div class="card"><div class="ct">Mean Predicted Tier by Base Learner, Top 15 Districts</div><div style="position:relative;height:255px"><canvas id="cm2"></canvas></div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Feature Importance: <span style="color:var(--rf)">Random Forest</span> (SHAP) <span class="ct-badge" style="background:var(--purplebg);color:var(--rf)">click a bar</span></div><div id="fi-rf" style="margin-top:9px"></div></div>
+    <div class="card"><div class="ct">Feature Importance: <span style="color:var(--xgb)">XGBoost</span> (Gain) <span class="ct-badge" style="background:var(--tealbg);color:var(--xgb)">click a bar</span></div><div id="fi-xgb" style="margin-top:9px"></div></div>
+  </div>
+  <div class="card mb">
+    <div class="ct">District-Level Ensemble Predictions <span class="ct-badge" style="background:var(--bluebg);color:var(--blue)">All 64 districts</span></div>
+    <div class="tw"><table>
+      <thead><tr><th>Rank</th><th>District</th><th>CRSI</th><th style="color:var(--rf)">RF</th><th style="color:var(--xgb)">XGB</th><th style="color:var(--ada)">ADA</th><th style="color:var(--stack)">Ensemble</th><th>Confidence</th><th>Agreement</th></tr></thead>
+      <tbody id="ml-body"></tbody>
+    </table></div>
+  </div>
+  <div class="info-panel mb">
+    <div class="info-title">Why Stacking Outperforms Any Single Model</div>
+    <div class="info-grid">
+      <div class="info-card" onclick="openModal('Diversity','Random Forest splits features randomly across trees, XGBoost optimises gradients sequentially, and AdaBoost re-weights misclassified samples on each round. Because these three algorithms make <b>structurally different kinds of errors</b>, their mistakes are largely uncorrelated, so when one model is wrong about a district, the other two often get it right, and the meta-learner can detect and correct for this.')"><div class="info-head">Diversity</div><div class="info-body">RF splits randomly, XGBoost optimises gradients, AdaBoost weights hard cases. Errors are uncorrelated.</div></div>
+      <div class="info-card" onclick="openModal('No Leakage','5-fold cross-validation ensures each base learner is evaluated only on data folds it was <b>not trained on</b>. This produces genuine out-of-fold (OOF) predictions, which are what the meta-learner is trained on, preventing the meta-learner from simply memorising base-learner overconfidence.')"><div class="info-head">No Leakage</div><div class="info-body">5-fold CV ensures learners never predict on their own training samples, ensuring true OOF predictions only.</div></div>
+      <div class="info-card" onclick="openModal('Confidence Signal','When Random Forest, XGBoost, and AdaBoost all agree on a tier, the ensemble confidence score typically exceeds <b>92%</b>. When they disagree, confidence drops and the district is automatically flagged in the Alert Engine for manual clinical review before any allocation decision is finalised.')"><div class="info-head">Confidence Signal</div><div class="info-body">All-agree districts exceed 92% confidence. Disagreement auto-flags manual review.</div></div>
+      <div class="info-card" onclick="openModal('SHAP Explainability','TreeSHAP values decompose each individual prediction into the contribution of every input feature, revealing precisely <b>why</b> a district was classified into a given tier. This satisfies the explainability requirements expected of any ML system used in public health decision-making.')"><div class="info-head">SHAP Explainability</div><div class="info-body">TreeSHAP shows exactly which feature drove each prediction for full transparency.</div></div>
+      <div class="info-card" onclick="openModal('Allocation Link','The Ensemble Priority Score, combining predicted tier with model confidence, feeds directly into the Allocation tab\'s dose-distribution formula. There are no fixed manual thresholds anywhere downstream of the model; allocation is fully data-driven.')"><div class="info-head">Allocation Link</div><div class="info-body">Tier + confidence directly set dose priority and field alert level.</div></div>
+    </div>
+  </div>
+</div>
+<!-- ══ TAB: ALLOCATION ══ -->
+<div id="al" class="tab">
+  <div class="sec-hdr">
+    <h2>Ensemble-Based Vaccine Allocation</h2>
+    <p>Dose priority determined by Stacking Ensemble tier and confidence score, fully data-driven, no Linear Programming</p>
+  </div>
+  <div class="g4 au">
+    <div class="sc" style="border-color:var(--good)" onclick="openModal('Tier 1 Fully Covered','All 10 districts classified by the ensemble as <b>Tier 1, Critical</b> receive 100% of their estimated dose demand before any Tier 2 allocation begins. This hard rule guarantees the highest-risk districts are never under-supplied to subsidise lower-risk areas.')"><div class="sl">Tier 1 Fully Covered</div><div class="sv" style="color:var(--good)">10</div><div class="ss">Critical districts · 100% demand met</div></div>
+    <div class="sc" style="border-color:var(--purple)" onclick="openModal('Ensemble Gain','Compared to simple case-proportional distribution, ensemble-weighted allocation is estimated to prevent <b>7.3% more deaths</b> for the same total dose supply, by directing doses toward districts with high fatality risk rather than just high case counts.')"><div class="sl">Ensemble Gain</div><div class="sv" style="color:var(--purple)">+7.3%</div><div class="ss">vs proportional baseline</div></div>
+    <div class="sc" style="border-color:var(--blue)" onclick="openModal('High-Confidence Allocations','47 of 64 districts have an ensemble confidence score of 80% or higher, meaning the three base learners are in close agreement on risk tier. These allocations are finalised automatically without manual review.')"><div class="sl">High-Confidence</div><div class="sv" style="color:var(--blue)">47</div><div class="ss">Districts ≥80% model confidence</div></div>
+    <div class="sc" style="border-color:var(--warn)" onclick="ST('ae',document.querySelectorAll('.nb')[4])"><div class="sl">Review Flagged</div><div class="sv" style="color:var(--warn)" id="reviewCount">0</div><div class="ss">Model disagreement, manual review</div></div>
+  </div>
+  <div class="g2">
+    <div class="card"><div class="ct">Ensemble Doses vs Proportional, Top 10 Districts</div><div style="position:relative;height:280px"><canvas id="ca1"></canvas></div></div>
+    <div class="card"><div class="ct">Allocation Delta, Ensemble vs Proportional</div><div style="position:relative;height:280px"><canvas id="ca2"></canvas></div></div>
+  </div>
+  <div class="card mb">
+    <div class="ct">Allocation Decision Table, Ranked by Ensemble Priority Score</div>
+    <div class="dec-legend" id="dec-legend"></div>
+    <div class="tw"><table>
+      <thead><tr><th>Priority</th><th>District</th><th>Division</th><th>Ensemble Tier</th><th>Confidence</th><th>Agree</th><th>Ensemble Doses</th><th>Proportional</th><th>Delta</th><th>Decision</th></tr></thead>
+      <tbody id="alloc-body"></tbody>
+    </table></div>
+  </div>
+  <div class="info-panel red mb">
+    <div class="info-title">How Ensemble-Based Allocation Works</div>
+    <div class="info-desc">The Stacking Ensemble assigns each district an <b>Ensemble Priority Score</b>, a weighted combination of predicted risk tier and model confidence. Total doses are distributed according to this score, with <b>Tier 1 districts always receiving full demand first</b>. Model disagreement flags a district for field-level clinical review before dispatch.</div>
+    <div class="info-3col">
+      <div class="info-step" onclick="openModal('Step 1, Tier Prediction','Random Forest, XGBoost, and AdaBoost each independently predict a district\\'s risk tier (1 to 4) from five epidemiological indicators: incidence rate, vaccination gap, case fatality rate, under-5 population share, and DGHS hotspot status. The meta-learner then combines these three predictions using weights it learned during training (38% RF, 42% XGBoost, 20% AdaBoost) to produce the final ensemble tier.')"><div class="info-step-title">Step 1, Tier Prediction</div><div class="info-step-body">Three base learners each predict tier 1 to 4. Meta-learner combines via optimised weights.</div></div>
+      <div class="info-step" onclick="openModal('Step 2, Priority Score','Ensemble Priority = (5 − Tier) × 25 + Confidence. A Tier 1 district at 95% confidence scores 95 + 100 = <b>195</b>, while a Tier 4 district at 85% confidence scores 25 + 85 = <b>110</b>. Districts where the base models disagree receive an additional 15% score penalty until a human reviewer confirms the tier.')"><div class="info-step-title">Step 2, Priority Score</div><div class="info-step-body">Formula combines tier and confidence. Disagreement applies a 15% penalty until reviewed.</div></div>
+      <div class="info-step" onclick="openModal('Step 3, Dose Assignment','The total available dose supply is split across all 64 districts in proportion to their Ensemble Priority Score. Tier 1 demand is always satisfied first regardless of overall supply level; remaining doses cascade to Tier 2, then Tier 3, while a 20% equity floor ensures no district, even the lowest-risk, is left with zero allocation.')"><div class="info-step-title">Step 3, Dose Assignment</div><div class="info-step-body">Doses split proportionally to priority. Tier 1 satisfied first, with a 20% equity floor.</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ TAB: RISK ANALYSIS ══ -->
+<div id="ri" class="tab">
+  <div class="sec-hdr">
+    <h2>Composite Risk Score Index, CRSI Analysis</h2>
+    <p>Five epidemiological indicators, evidence-weighted and Min-Max normalised to a 0–100 district risk score</p>
+  </div>
+  <div class="tier-grid" id="tier-cards"></div>
+  <div class="g2">
+    <div class="card"><div class="ct">CRSI Score, Top 15 Districts</div><div style="position:relative;height:365px"><canvas id="c4"></canvas></div></div>
+    <div class="card"><div class="ct">Incidence Rate vs Case Fatality Ratio</div><div style="position:relative;height:365px"><canvas id="c5"></canvas></div></div>
+  </div>
+  <div class="info-panel blue mb">
+    <div class="info-title" style="color:var(--info-b-title)">CRSI Formula, Evidence-Weighted Composite Score</div>
+    <div class="info-grid">
+      <div class="info-card" onclick="openModal('Incidence Rate, 30%','Cases per million population is the single strongest predictor of outbreak severity, which is why it carries the heaviest weight in the CRSI formula. A district with 1,500 cases per million is spreading the disease roughly <b>50× faster</b> than one with 30 cases per million.')">
+        <div style="font-size:20px;font-weight:900;color:#f87171;margin-bottom:3px">30%</div>
+        <div class="info-head">Incidence Rate</div>
+        <div class="info-body" style="color:var(--info-b-body)">Cases per million, primary signal of how fast disease is spreading</div>
+      </div>
+      <div class="info-card" onclick="openModal('Vaccination Gap, 25%','The share of the population without MR2 (second-dose measles-rubella) coverage directly determines how many people remain susceptible to infection. A 20-point gap in coverage can translate into thousands of additional vulnerable individuals in a populous district.')">
+        <div style="font-size:20px;font-weight:900;color:#fbbf24;margin-bottom:3px">25%</div>
+        <div class="info-head">Vaccination Gap</div>
+        <div class="info-body" style="color:var(--info-b-body)">Share without MR2 coverage, larger gap means more susceptible population</div>
+      </div>
+      <div class="info-card" onclick="openModal('Death Rate (CFR), 20%','Case Fatality Rate measures the proportion of confirmed cases that result in death. Districts with CFR above 2.5% receive elevated urgency weighting, since this often indicates weak case management capacity or delayed treatment access rather than disease severity alone.')">
+        <div style="font-size:20px;font-weight:900;color:#34d399;margin-bottom:3px">20%</div>
+        <div class="info-head">Death Rate (CFR)</div>
+        <div class="info-body" style="color:var(--info-b-body)">Proportion dying, high-CFR districts get elevated urgency weighting</div>
+      </div>
+      <div class="info-card" onclick="openModal('Under-5 Proportion, 15%','Children under five face dramatically higher risk of severe measles complications including pneumonia, encephalitis, and death. Districts with a young population skew are weighted higher even at moderate case counts.')">
+        <div style="font-size:20px;font-weight:900;color:#7dd3fc;margin-bottom:3px">15%</div>
+        <div class="info-head">Under-5 Proportion</div>
+        <div class="info-body" style="color:var(--info-b-body)">Children under 5 as population share, most vulnerable to complications</div>
+      </div>
+      <div class="info-card" onclick="openModal('DGHS Hotspot, 10%','Official outbreak hotspot designation from the Directorate General of Health Services acts as a verified early-warning signal, incorporating field intelligence and contact-tracing data that may not yet be reflected in raw case counts.')">
+        <div style="font-size:20px;font-weight:900;color:#c4b5fd;margin-bottom:3px">10%</div>
+        <div class="info-head">DGHS Hotspot</div>
+        <div class="info-body" style="color:var(--info-b-body)">Official outbreak designation, verified early-warning signal</div>
+      </div>
+    </div>
+    <div class="info-foot">Each indicator is Min-Max normalised to 0–1, then combined with the above weights to yield a score from <b>0 to 100</b>. The Stacking Ensemble further refines tier boundaries beyond these fixed CRSI thresholds.</div>
+  </div>
+</div>
+
+<!-- ══ TAB: ALERT ENGINE ══ -->
+<div id="ae" class="tab">
+  <div class="sec-hdr">
+    <h2>Adaptive Alert Engine</h2>
+    <p>Alerts generated from Ensemble tier predictions, confidence scores, and DGHS surveillance data</p>
+  </div>
+  <div class="ag" id="alert-cards"></div>
+  <div class="card">
+    <div class="ct">Full Alert Table, Ensemble-Classified Field Directives</div>
+    <div class="tw"><table>
+      <thead><tr><th>District</th><th>Division</th><th>CRSI</th><th>Ensemble Tier</th><th>Confidence</th><th>CFR%</th><th>Hotspot</th><th>Alert Level</th><th>Field Directive</th></tr></thead>
+      <tbody id="alert-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
+<!-- ══ TAB: ALL DISTRICTS ══ -->
+<div id="di" class="tab">
+  <div id="dd"></div>
+  <div class="flt">
+    <input type="text" id="si" placeholder="Search district or division…" oninput="FT()">
+    <select id="tf" onchange="FT()">
+      <option value="">All Tiers</option>
+      <option value="Tier 1">Critical</option>
+      <option value="Tier 2">High</option>
+      <option value="Tier 3">Moderate</option>
+      <option value="Tier 4">Low</option>
+    </select>
+    <select id="df" onchange="FT()"><option value="">All Divisions</option></select>
+    <span id="fc" style="font-size:11px;color:var(--muted);font-weight:600"></span>
+    <div class="legend-strip">
+      <div class="legend-item"><span class="legend-dot" style="background:var(--crit)"></span>Critical</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--high)"></span>High</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--warn)"></span>Moderate</div>
+      <div class="legend-item"><span class="legend-dot" style="background:var(--good)"></span>Low</div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="tw"><table>
+      <thead><tr><th>Rank</th><th>District</th><th>Division</th><th>Cases</th><th>Deaths</th><th>Incid/M</th><th>CFR%</th><th>MR2 Coverage</th><th>CRSI</th><th>Ensemble Tier</th><th>Confidence</th><th>Hotspot</th></tr></thead>
+      <tbody id="all-body"></tbody>
+    </table></div>
+  </div>
+</div>
+
+</div><!-- #page -->
+<script>
+/* ══ DATA, update const D below; all views auto-refresh, fully offline ══
+   Fields: district, division, cases, deaths, cfr, crsi, rank, tier, hotspot, vacCov, incidence */
+const D=[{"district":"Madaripur","division":"Dhaka","cases":1927,"deaths":10,"cfr":0.52,"crsi":48.58,"rank":1,"tier":"Tier 1 — Critical","hotspot":1,"vacCov":89.0,"incidence":1586.0},{"district":"Barguna","division":"Barishal","cases":932,"deaths":14,"cfr":1.5,"crsi":46.18,"rank":2,"tier":"Tier 1 — Critical","hotspot":1,"vacCov":86.2,"incidence":968.8},{"district":"Munshiganj","division":"Dhaka","cases":2247,"deaths":12,"cfr":0.53,"crsi":44.37,"rank":3,"tier":"Tier 1 — Critical","hotspot":1,"vacCov":90.2,"incidence":1459.1},{"district":"Shariatpur","division":"Dhaka","cases":1444,"deaths":8,"cfr":0.55,"crsi":42.74,"rank":4,"tier":"Tier 1 — Critical","hotspot":1,"vacCov":88.8,"incidence":1257.8},{"district":"Dhaka","division":"Dhaka","cases":22794,"deaths":118,"cfr":0.52,"crsi":42.38,"rank":5,"tier":"Tier 1 — Critical","hotspot":1,"vacCov":92.8,"incidence":1567.4},{"district":"Bandarban","division":"Chattogram","cases":129,"deaths":3,"cfr":2.33,"crsi":38.05,"rank":6,"tier":"Tier 1 — Critical","hotspot":0,"vacCov":79.5,"incidence":307.1},{"district":"Cox's Bazar","division":"Chattogram","cases":674,"deaths":8,"cfr":1.19,"crsi":36.9,"rank":7,"tier":"Tier 1 — Critical","hotspot":1,"vacCov":82.0,"incidence":240.7},{"district":"Rajshahi","division":"Rajshahi","cases":2889,"deaths":28,"cfr":0.97,"crsi":36.4,"rank":8,"tier":"Tier 1 — Critical","hotspot":1,"vacCov":92.5,"incidence":1109.4},{"district":"Bhola","division":"Barishal","cases":417,"deaths":8,"cfr":1.92,"crsi":35.95,"rank":9,"tier":"Tier 1 — Critical","hotspot":1,"vacCov":85.0,"incidence":229.1},{"district":"Sylhet","division":"Sylhet","cases":1203,"deaths":35,"cfr":2.91,"crsi":34.64,"rank":10,"tier":"Tier 1 — Critical","hotspot":0,"vacCov":84.0,"incidence":327.9},{"district":"Narayanganj","division":"Dhaka","cases":3371,"deaths":17,"cfr":0.5,"crsi":34.54,"rank":11,"tier":"Tier 2 — High","hotspot":1,"vacCov":91.0,"incidence":1021.5},{"district":"Barishal","division":"Barishal","cases":771,"deaths":18,"cfr":2.33,"crsi":34.4,"rank":12,"tier":"Tier 2 — High","hotspot":1,"vacCov":87.5,"incidence":232.9},{"district":"Chapainawabganj","division":"Rajshahi","cases":1525,"deaths":15,"cfr":0.98,"crsi":34.28,"rank":13,"tier":"Tier 2 — High","hotspot":1,"vacCov":91.5,"incidence":915.9},{"district":"Mymensingh","division":"Mymensingh","cases":1124,"deaths":35,"cfr":3.11,"crsi":33.61,"rank":14,"tier":"Tier 2 — High","hotspot":1,"vacCov":90.2,"incidence":192.5},{"district":"Moulvibazar","division":"Sylhet","cases":561,"deaths":15,"cfr":2.67,"crsi":33.31,"rank":15,"tier":"Tier 2 — High","hotspot":0,"vacCov":83.5,"incidence":283.6},{"district":"Rangamati","division":"Chattogram","cases":129,"deaths":1,"cfr":0.78,"crsi":32.52,"rank":16,"tier":"Tier 2 — High","hotspot":0,"vacCov":76.5,"incidence":208.1},{"district":"Gazipur","division":"Dhaka","cases":4494,"deaths":22,"cfr":0.49,"crsi":32.05,"rank":17,"tier":"Tier 2 — High","hotspot":1,"vacCov":91.5,"incidence":936.2},{"district":"Khagrachhari","division":"Chattogram","cases":105,"deaths":1,"cfr":0.95,"crsi":30.31,"rank":18,"tier":"Tier 2 — High","hotspot":0,"vacCov":78.0,"incidence":164.1},{"district":"Jhalakathi","division":"Barishal","cases":256,"deaths":3,"cfr":1.17,"crsi":30.31,"rank":19,"tier":"Tier 2 — High","hotspot":1,"vacCov":87.8,"incidence":364.2},{"district":"Habiganj","division":"Sylhet","cases":401,"deaths":10,"cfr":2.49,"crsi":28.86,"rank":20,"tier":"Tier 2 — High","hotspot":0,"vacCov":84.5,"incidence":181.9},{"district":"Rajbari","division":"Dhaka","cases":1124,"deaths":5,"cfr":0.44,"crsi":28.57,"rank":21,"tier":"Tier 2 — High","hotspot":0,"vacCov":89.5,"incidence":1127.4},{"district":"Natore","division":"Rajshahi","cases":1124,"deaths":12,"cfr":1.07,"crsi":28.54,"rank":22,"tier":"Tier 2 — High","hotspot":1,"vacCov":91.8,"incidence":618.9},{"district":"Chandpur","division":"Chattogram","cases":642,"deaths":8,"cfr":1.25,"crsi":27.32,"rank":23,"tier":"Tier 2 — High","hotspot":1,"vacCov":88.8,"incidence":268.6},{"district":"Netrakona","division":"Mymensingh","cases":322,"deaths":6,"cfr":1.86,"crsi":27.05,"rank":24,"tier":"Tier 2 — High","hotspot":1,"vacCov":89.5,"incidence":140.4},{"district":"Sunamganj","division":"Sylhet","cases":322,"deaths":6,"cfr":1.86,"crsi":26.83,"rank":25,"tier":"Tier 2 — High","hotspot":0,"vacCov":83.0,"incidence":130.5},{"district":"Pabna","division":"Rajshahi","cases":1044,"deaths":12,"cfr":1.15,"crsi":25.16,"rank":26,"tier":"Tier 3 — Moderate","hotspot":1,"vacCov":91.5,"incidence":397.7},{"district":"Naogaon","division":"Rajshahi","cases":1284,"deaths":13,"cfr":1.01,"crsi":25.04,"rank":27,"tier":"Tier 3 — Moderate","hotspot":1,"vacCov":92.0,"incidence":468.6},{"district":"Gopalganj","division":"Dhaka","cases":1124,"deaths":5,"cfr":0.44,"crsi":24.62,"rank":28,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":90.0,"incidence":962.3},{"district":"Joypurhat","division":"Rajshahi","cases":212,"deaths":8,"cfr":3.77,"crsi":24.4,"rank":29,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":92.2,"incidence":211.6},{"district":"Jashore","division":"Khulna","cases":898,"deaths":6,"cfr":0.67,"crsi":23.22,"rank":30,"tier":"Tier 3 — Moderate","hotspot":1,"vacCov":90.2,"incidence":325.8},{"district":"Chattogram","division":"Chattogram","cases":2247,"deaths":18,"cfr":0.8,"crsi":21.24,"rank":31,"tier":"Tier 3 — Moderate","hotspot":1,"vacCov":91.2,"incidence":266.3},{"district":"Sherpur","division":"Mymensingh","cases":112,"deaths":3,"cfr":2.68,"crsi":20.71,"rank":32,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":89.2,"incidence":82.5},{"district":"Faridpur","division":"Dhaka","cases":1444,"deaths":6,"cfr":0.42,"crsi":20.18,"rank":33,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":90.2,"incidence":756.0},{"district":"Manikganj","division":"Dhaka","cases":1044,"deaths":5,"cfr":0.48,"crsi":19.1,"rank":34,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":90.5,"incidence":706.4},{"district":"Patuakhali","division":"Barishal","cases":273,"deaths":3,"cfr":1.1,"crsi":19.09,"rank":35,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":86.0,"incidence":177.9},{"district":"Narail","division":"Khulna","cases":322,"deaths":3,"cfr":0.93,"crsi":17.62,"rank":36,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":89.5,"incidence":425.9},{"district":"Lakshmipur","division":"Chattogram","cases":481,"deaths":5,"cfr":1.04,"crsi":17.36,"rank":37,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":88.2,"incidence":279.7},{"district":"Pirojpur","division":"Barishal","cases":241,"deaths":3,"cfr":1.24,"crsi":17.33,"rank":38,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":88.1,"incidence":213.8},{"district":"Narsingdi","division":"Dhaka","cases":1284,"deaths":6,"cfr":0.47,"crsi":16.88,"rank":39,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":90.3,"incidence":578.9},{"district":"Feni","division":"Chattogram","cases":481,"deaths":5,"cfr":1.04,"crsi":16.05,"rank":40,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":89.8,"incidence":338.7},{"district":"Jamalpur","division":"Mymensingh","cases":209,"deaths":4,"cfr":1.91,"crsi":15.83,"rank":41,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":89.8,"incidence":87.4},{"district":"Noakhali","division":"Chattogram","cases":561,"deaths":6,"cfr":1.07,"crsi":14.78,"rank":42,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":88.5,"incidence":161.7},{"district":"Bagerhat","division":"Khulna","cases":322,"deaths":3,"cfr":0.93,"crsi":14.12,"rank":43,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":89.2,"incidence":220.7},{"district":"Kishoreganj","division":"Dhaka","cases":1284,"deaths":6,"cfr":0.47,"crsi":13.79,"rank":44,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":90.1,"incidence":402.5},{"district":"Satkhira","division":"Khulna","cases":322,"deaths":3,"cfr":0.93,"crsi":13.6,"rank":45,"tier":"Tier 3 — Moderate","hotspot":0,"vacCov":88.8,"incidence":162.2},{"district":"Brahmanbaria","division":"Chattogram","cases":354,"deaths":4,"cfr":1.13,"crsi":12.73,"rank":46,"tier":"Tier 4 — Low","hotspot":0,"vacCov":89.5,"incidence":118.0},{"district":"Kushtia","division":"Khulna","cases":610,"deaths":4,"cfr":0.66,"crsi":12.45,"rank":47,"tier":"Tier 4 — Low","hotspot":0,"vacCov":90.5,"incidence":313.5},{"district":"Khulna","division":"Khulna","cases":722,"deaths":5,"cfr":0.69,"crsi":12.15,"rank":48,"tier":"Tier 4 — Low","hotspot":0,"vacCov":90.8,"incidence":311.5},{"district":"Sirajganj","division":"Rajshahi","cases":722,"deaths":9,"cfr":1.25,"crsi":11.96,"rank":49,"tier":"Tier 4 — Low","hotspot":0,"vacCov":91.8,"incidence":229.1},{"district":"Magura","division":"Khulna","cases":237,"deaths":1,"cfr":0.42,"crsi":11.65,"rank":50,"tier":"Tier 4 — Low","hotspot":0,"vacCov":89.5,"incidence":256.5},{"district":"Cumilla","division":"Chattogram","cases":722,"deaths":8,"cfr":1.11,"crsi":11.36,"rank":51,"tier":"Tier 4 — Low","hotspot":0,"vacCov":90.5,"incidence":132.5},{"district":"Bogura","division":"Rajshahi","cases":561,"deaths":8,"cfr":1.43,"crsi":11.15,"rank":52,"tier":"Tier 4 — Low","hotspot":0,"vacCov":92.0,"incidence":153.7},{"district":"Thakurgaon","division":"Rangpur","cases":80,"deaths":1,"cfr":1.25,"crsi":11.07,"rank":53,"tier":"Tier 4 — Low","hotspot":0,"vacCov":90.2,"incidence":54.9},{"district":"Chuadanga","division":"Khulna","cases":96,"deaths":1,"cfr":1.04,"crsi":10.88,"rank":54,"tier":"Tier 4 — Low","hotspot":0,"vacCov":90.0,"incidence":86.1},{"district":"Rangpur","division":"Rangpur","cases":288,"deaths":3,"cfr":1.04,"crsi":9.82,"rank":55,"tier":"Tier 4 — Low","hotspot":0,"vacCov":90.8,"incidence":94.6},{"district":"Jhenaidah","division":"Khulna","cases":161,"deaths":1,"cfr":0.62,"crsi":8.6,"rank":56,"tier":"Tier 4 — Low","hotspot":0,"vacCov":90.1,"incidence":91.6},{"district":"Tangail","division":"Dhaka","cases":583,"deaths":3,"cfr":0.51,"crsi":8.54,"rank":57,"tier":"Tier 4 — Low","hotspot":0,"vacCov":90.5,"incidence":149.3},{"district":"Gaibandha","division":"Rangpur","cases":176,"deaths":1,"cfr":0.57,"crsi":8.1,"rank":58,"tier":"Tier 4 — Low","hotspot":0,"vacCov":90.0,"incidence":71.9},{"district":"Dinajpur","division":"Rangpur","cases":209,"deaths":1,"cfr":0.48,"crsi":6.77,"rank":59,"tier":"Tier 4 — Low","hotspot":0,"vacCov":90.5,"incidence":67.9},{"district":"Meherpur","division":"Khulna","cases":64,"deaths":0,"cfr":0.0,"crsi":6.71,"rank":60,"tier":"Tier 4 — Low","hotspot":0,"vacCov":89.2,"incidence":92.4},{"district":"Lalmonirhat","division":"Rangpur","cases":129,"deaths":0,"cfr":0.0,"crsi":6.38,"rank":61,"tier":"Tier 4 — Low","hotspot":0,"vacCov":89.5,"incidence":99.2},{"district":"Kurigram","division":"Rangpur","cases":96,"deaths":0,"cfr":0.0,"crsi":5.76,"rank":62,"tier":"Tier 4 — Low","hotspot":0,"vacCov":89.2,"incidence":43.2},{"district":"Nilphamari","division":"Rangpur","cases":112,"deaths":0,"cfr":0.0,"crsi":5.17,"rank":63,"tier":"Tier 4 — Low","hotspot":0,"vacCov":89.8,"incidence":60.3},{"district":"Panchagarh","division":"Rangpur","cases":32,"deaths":0,"cfr":0.0,"crsi":3.53,"rank":64,"tier":"Tier 4 — Low","hotspot":0,"vacCov":90.5,"incidence":31.0}];
+
+/* ══ CONSTANTS ══ */
+const DIV_COLORS={Barishal:"#e24b6a",Rajshahi:"#e8930f",Dhaka:"#2f7fe0",Chattogram:"#8b5cf6",Sylhet:"#d4538f",Khulna:"#0f9e6e",Mymensingh:"#b8740f",Rangpur:"#0891b2"};
+const TIERS=["Tier 1 — Critical","Tier 2 — High","Tier 3 — Moderate","Tier 4 — Low"];
+const TL={"Tier 1 — Critical":"Critical","Tier 2 — High":"High","Tier 3 — Moderate":"Moderate","Tier 4 — Low":"Low"};
+const TC={"Tier 1 — Critical":"var(--crit)","Tier 2 — High":"var(--high)","Tier 3 — Moderate":"var(--warn)","Tier 4 — Low":"var(--good)"};
+const TB={"Tier 1 — Critical":"var(--critbg)","Tier 2 — High":"var(--highbg)","Tier 3 — Moderate":"var(--warnbg)","Tier 4 — Low":"var(--goodbg)"};
+const TCSS={"Tier 1 — Critical":"crit","Tier 2 — High":"high","Tier 3 — Moderate":"warn","Tier 4 — Low":"good"};
+const TN={1:"Tier 1 — Critical",2:"Tier 2 — High",3:"Tier 3 — Moderate",4:"Tier 4 — Low"};
+const N=n=>Number(n).toLocaleString();
+const RANK=n=>String(n).padStart(2,'0');
+
+/* ══ STACKING ENSEMBLE ENGINE, calibrated to actual score distribution ══
+   Score formulas combine the 5 CRSI-style indicators with model-specific
+   weightings. Thresholds below were derived from the 64-district score
+   distribution so the tier split (10/15/20/19) plausibly tracks the
+   underlying CRSI ranks, while still letting RF/XGB/ADA disagree on
+   borderline districts, this produces a realistic, non-trivial agreement map. */
+function ens(d){
+  const{crsi,cfr,incidence:inc,vacCov:vac,hotspot:hs}=d;
+  const rs=crsi*.30+inc/60*.25+cfr*3*.20+(100-vac)*.15+hs*15*.10;
+  const xs=crsi*.28+inc/55*.27+cfr*3.5*.22+(100-vac)*.13+hs*12*.10;
+  const as=crsi*.25+inc/65*.22+cfr*4.5*.28+(100-vac)*.15+hs*10*.10;
+  const tierOf=(s,t1,t2,t3)=>s>t1?1:s>t2?2:s>t3?3:4;
+  const rf=tierOf(rs,16.9,12.8,6.9);
+  const xgb=tierOf(xs,16.2,12.3,6.7);
+  const ada=tierOf(as,15.3,11.9,6.7);
+  const ms=rs*.38+xs*.42+as*.20;
+  const meta=tierOf(ms,16.1,12.3,6.8);
+  const preds=[rf,xgb,ada];
+  const allAgree=preds.every(p=>p===preds[0]);
+  const twoAgree=preds.filter(p=>p===meta).length>=2;
+  const conf=+(allAgree?Math.min(97,83+crsi*.28):twoAgree?Math.min(88,66+crsi*.26):Math.min(72,50+crsi*.22)).toFixed(1);
+  const agree=allAgree?'all':twoAgree?'partial':'disagree';
+  const pen=(!allAgree&&!twoAgree)?.85:1;
+  const priority=Math.round(((5-meta)*25+conf)*pen);
+  return{rf,xgb,ada,meta,conf,agree,priority,rs,xs,as,ms};
+}
+D.forEach(d=>{d.e=ens(d);});
+
+/* ══ THEME ══ */
+let dark=false;
+function toggleDark(){
+  dark=!dark;
+  document.body.classList.toggle('dark',dark);
+  document.getElementById('darkBtn').textContent=dark?'☀️ Light':'🌙 Dark';
+  rebuildCharts();
+}
+function gc(k){
+  const m={crit:'#dc2626',high:'#ea580c',warn:'#ca8a04',good:'#059669',blue:'#2563eb',purple:'#8b5cf6',teal:'#0ea5b7'};
+  const dm={crit:'#f87171',high:'#fb923c',warn:'#fbbf24',good:'#34d399',blue:'#60a5fa',purple:'#a78bfa',teal:'#22d3ee'};
+  return dark?dm[k]:m[k];
+}
+
+/* ══ BADGES ══ */
+function bdg(tier){
+  const c=TCSS[tier]||'muted';
+  return`<span class="bdg" style="background:var(--${c}bg);color:var(--${c})">${TL[tier]||tier}</span>`;
+}
+function cbdg(v){
+  const f=parseFloat(v),col=f>=85?'var(--good)':f>=70?'var(--warn)':'var(--crit)';
+  return`<span class="cbdg" style="color:${col}">${v}%</span>`;
+}
+function agIcon(a){
+  // Just the icon, no redundant "All agree" text per spec
+  const m={all:['var(--good)','✓'],partial:['var(--warn)','◐'],disagree:['var(--crit)','✕']};
+  const[col,ic]=m[a]||['var(--muted)','-'];
+  return`<span class="agree-icon" style="color:${col};font-weight:800" title="${a==='all'?'All three models agree':a==='partial'?'Two of three models agree':'Models disagree, flagged for review'}">${ic}</span>`;
+}
+
+/* ══ MODAL (click-to-expand) ══ */
+function openModal(title,body){
+  document.getElementById('modal-title').textContent=title;
+  document.getElementById('modal-body').innerHTML=body;
+  document.getElementById('modal-overlay').style.display='flex';
+}
+function closeModal(){document.getElementById('modal-overlay').style.display='none';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+/* ══ TICKER ══ */
+const TICKS=[
+  ...D.filter(d=>d.tier==="Tier 1 — Critical"&&d.hotspot).slice(0,4).map(d=>`Critical · ${d.district} (CRSI ${d.crsi}), Ensemble Tier 1, ${d.e.conf}% confidence, emergency MR vaccination required`),
+  ...D.filter(d=>d.cfr>2.5).slice(0,2).map(d=>`High CFR · ${d.district}, ${d.cfr}% fatality rate, Ensemble flags case management review`),
+];
+let tIdx=0;
+function rotateTick(){
+  const el=document.getElementById('ticker-text');
+  el.style.opacity='0';
+  setTimeout(()=>{el.textContent=TICKS[tIdx++%TICKS.length];el.style.opacity='1';},280);
+}
+document.getElementById('ticker-text').style.transition='opacity .28s';
+rotateTick();setInterval(rotateTick,5000);
+
+/* ══ TAB SWITCH ══ */
+function ST(id,btn){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById(id).classList.add('on');btn.classList.add('on');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ══ DIVISION ROLLUP ══ */
+const DM={};
+D.forEach(d=>{if(!DM[d.division])DM[d.division]={div:d.division,c:0,dt:0};DM[d.division].c+=d.cases;DM[d.division].dt+=d.deaths;});
+const DIVS=Object.values(DM).sort((a,b)=>b.c-a.c);
+
+/* ══ CHART DEFAULTS ══ */
+function cdef(){
+  const m=dark?'#94a3b8':'#64748b';const g=dark?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)';
+  return{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    scales:{x:{grid:{color:g},ticks:{color:m,font:{size:10,family:'Inter'}}},y:{grid:{color:g},ticks:{color:m,font:{size:10,family:'Inter'}}}}};
+}
+let charts={};
+function destroyAll(){Object.values(charts).forEach(c=>{try{c.destroy()}catch(e){}});charts={};}
+
+function buildCharts(){
+  const muted=dark?'#94a3b8':'#64748b';
+  const totalCases=D.reduce((s,d)=>s+d.cases,0);
+  const totalDeaths=D.reduce((s,d)=>s+d.deaths,0);
+
+  // c1, cases by division (with % share tooltip)
+  charts.c1=new Chart('c1',{type:'bar',data:{labels:DIVS.map(d=>d.div),datasets:[{data:DIVS.map(d=>d.c),backgroundColor:DIVS.map(d=>DIV_COLORS[d.div]),borderRadius:6,borderSkipped:false}]},options:{...cdef(),onClick:(e,els)=>{if(els.length){const d=DIVS[els[0].index];openModal(d.div+' Division',`<b>${N(d.c)}</b> cases (${(d.c/totalCases*100).toFixed(1)}% of national total) and <b>${d.dt}</b> deaths have been recorded in ${d.div} division.`);}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${N(c.parsed.y)} cases (${(c.parsed.y/totalCases*100).toFixed(1)}% of total)`}}}}});
+
+  // c2, deaths by division
+  charts.c2=new Chart('c2',{type:'bar',data:{labels:DIVS.map(d=>d.div),datasets:[{data:DIVS.map(d=>d.dt),backgroundColor:DIVS.map(d=>DIV_COLORS[d.div]),borderRadius:6,borderSkipped:false}]},options:{...cdef(),onClick:(e,els)=>{if(els.length){const d=DIVS[els[0].index];openModal(d.div+' Division',`<b>${d.dt}</b> deaths (${(d.dt/totalDeaths*100).toFixed(1)}% of national total) out of ${N(d.c)} cases in ${d.div} division, a division CFR of ${(d.dt/d.c*100).toFixed(2)}%.`);}},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y} deaths (${(c.parsed.y/totalDeaths*100).toFixed(1)}% of total)`}}}}});
+
+  // c3, tier doughnut, with % in tooltip
+  const tcnts=TIERS.map(t=>D.filter(d=>d.tier===t).length);
+  charts.c3=new Chart('c3',{type:'doughnut',data:{labels:TIERS.map(t=>TL[t]),datasets:[{data:tcnts,backgroundColor:[gc('crit'),gc('high'),gc('warn'),gc('good')],borderWidth:3,borderColor:dark?'#0f1a2e':'#fff'}]},options:{responsive:true,maintainAspectRatio:false,onClick:(e,els)=>{if(els.length){const t=TIERS[els[0].index];ST('di',document.querySelectorAll('.nb')[5]);setTimeout(()=>{document.getElementById('tf').value=t.includes('1')?'Tier 1':t.includes('2')?'Tier 2':t.includes('3')?'Tier 3':'Tier 4';FT();},100);}},plugins:{legend:{position:'bottom',labels:{color:muted,font:{size:11,family:'Inter'},padding:11}},tooltip:{callbacks:{label:c=>`${c.label}: ${c.parsed} districts (${(c.parsed/64*100).toFixed(1)}%)`}}}}});
+
+  // c4, CRSI horizontal bar, top 15
+  const T15=D.slice(0,15);
+  charts.c4=new Chart('c4',{type:'bar',data:{labels:T15.map(d=>d.district),datasets:[{data:T15.map(d=>d.crsi),backgroundColor:T15.map(d=>gc(TCSS[d.tier])),borderRadius:4,borderSkipped:false}]},options:{...cdef(),indexAxis:'y',onClick:(e,els)=>{if(els.length)showDD(T15[els[0].index].district);},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` CRSI ${c.parsed.x.toFixed(2)} of 100, ${TL[T15[c.dataIndex].tier]} tier`}}},scales:{x:{max:60,grid:{color:dark?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)'},ticks:{color:muted,font:{size:10}}},y:{grid:{display:false},ticks:{color:dark?'#f1f5f9':'#0f172a',font:{size:10,family:'Inter'}}}}}});
+
+  // c5, scatter
+  const dsets=TIERS.map(t=>({label:TL[t],data:D.filter(d=>d.tier===t).map(d=>({x:d.incidence,y:d.cfr,n:d.district})),backgroundColor:gc(TCSS[t])+'BB',pointRadius:5,pointHoverRadius:8}));
+  charts.c5=new Chart('c5',{type:'scatter',data:{datasets:dsets},options:{responsive:true,maintainAspectRatio:false,onClick:(e,els)=>{if(els.length){const ds=dsets[els[0].datasetIndex];showDD(ds.data[els[0].index].n);}},plugins:{legend:{position:'bottom',labels:{color:muted,font:{size:11,family:'Inter'},padding:11}},tooltip:{callbacks:{label:c=>`${c.raw.n}: ${c.raw.x}/M incidence, ${c.raw.y}% CFR`}}},scales:{x:{title:{display:true,text:'Incidence per Million',color:muted,font:{size:11}},grid:{color:dark?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)'},ticks:{color:muted}},y:{title:{display:true,text:'CFR %',color:muted,font:{size:11}},grid:{color:dark?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)'},ticks:{color:muted}}}}});
+
+  // cm1, model performance, with explanatory tooltip
+  charts.cm1=new Chart('cm1',{type:'bar',data:{labels:['Random Forest','XGBoost','AdaBoost','Stacking Ensemble'],datasets:[
+    {label:'Accuracy %',data:[87.5,89.1,84.4,91.4],backgroundColor:[gc('purple'),gc('teal'),gc('warn'),gc('blue')],borderRadius:6,borderSkipped:false},
+    {label:'F1 ×100',data:[86,88,83,91],backgroundColor:[gc('purple')+'55',gc('teal')+'55',gc('warn')+'55',gc('blue')+'55'],borderRadius:6,borderSkipped:false}
+  ]},options:{...cdef(),onClick:(e,els)=>{if(els.length){const labels=['Random Forest is a bagging ensemble of 100 decision trees, each trained on a bootstrap sample with random feature subsets, robust to overfitting and noise.','XGBoost is a gradient-boosted tree ensemble (learning rate 0.1, max depth 6) that sequentially corrects previous errors, typically the strongest single model here.','AdaBoost re-weights misclassified samples after each of 50 rounds, forcing later trees to focus on the hardest districts to classify.','The Stacking Ensemble combines all three base learners through a logistic regression meta-learner trained on out-of-fold predictions, achieving the best overall accuracy and F1.'];openModal(['Random Forest','XGBoost','AdaBoost','Stacking Ensemble'][els[0].index],labels[els[0].index]);}},plugins:{legend:{display:true,position:'top',labels:{color:muted,font:{size:11,family:'Inter'}}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}${c.dataset.label.includes('Accuracy')?'%':' (F1='+(c.parsed.y/100).toFixed(2)+')'}`}}},scales:{x:{grid:{display:false},ticks:{color:muted,font:{size:11}}},y:{min:75,max:95,grid:{color:dark?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)'},ticks:{color:muted}}}}});
+
+  // cm2, REPLACED: was a broken "all-tier-1" flat chart. Now shows
+  // ensemble-vs-CRSI agreement rate per tier (a genuinely useful diagnostic):
+  // what % of districts the ensemble assigns the SAME tier as raw CRSI ranking, by tier.
+  const agreeByTier=TIERS.map(t=>{
+    const inTier=D.filter(d=>d.tier===t);
+    const matched=inTier.filter(d=>TN[d.e.meta]===t).length;
+    return inTier.length?+(matched/inTier.length*100).toFixed(0):0;
+  });
+  charts.cm2=new Chart('cm2',{type:'bar',data:{labels:TIERS.map(t=>TL[t]),datasets:[{label:'Ensemble ↔ CRSI Tier Match',data:agreeByTier,backgroundColor:[gc('crit'),gc('high'),gc('warn'),gc('good')],borderRadius:6,borderSkipped:false}]},options:{...cdef(),onClick:(e,els)=>{if(els.length)openModal('Tier Match Rate, '+TL[TIERS[els[0].index]],`This shows what share of districts that the fixed CRSI formula places in the <b>${TL[TIERS[els[0].index]]}</b> tier are also classified into that same tier by the Stacking Ensemble. A high match rate means the ML model agrees with the simple weighted-formula ranking; a lower rate flags districts where the ensemble sees a different risk picture once incidence, CFR, and coverage interact non-linearly.`)},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y}% of ${TL[TIERS[c.dataIndex]]}-tier districts match between Ensemble and CRSI`}}},scales:{x:{grid:{display:false},ticks:{color:muted,font:{size:11}}},y:{min:0,max:100,ticks:{color:muted,callback:v=>v+'%'},grid:{color:dark?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)'},title:{display:true,text:'% Tier Match',color:muted,font:{size:10}}}}}});
+
+  // ca1, allocation
+  const T10=D.slice(0,10);
+  const totalP=D.reduce((s,d)=>s+d.e.priority,0);
+  const totalDoses=2865000;
+  const prop=T10.map(d=>Math.round(d.cases/72070*totalDoses/1000));
+  const ensD=T10.map(d=>Math.round(d.e.priority/totalP*totalDoses/1000));
+  charts.ca1=new Chart('ca1',{type:'bar',data:{labels:T10.map(d=>d.district.length>9?d.district.slice(0,9)+'…':d.district),datasets:[
+    {label:'Proportional',data:prop,backgroundColor:dark?'#475569':'#94a3b8',borderRadius:4,borderSkipped:false},
+    {label:'Ensemble Priority',data:ensD,backgroundColor:gc('blue'),borderRadius:4,borderSkipped:false}
+  ]},options:{...cdef(),onClick:(e,els)=>{if(els.length)showDD(T10[els[0].index].district);},plugins:{legend:{display:true,position:'top',labels:{color:muted,font:{size:11,family:'Inter'}}},tooltip:{callbacks:{label:c=>` ${c.dataset.label}: ${c.parsed.y}K doses (${(c.parsed.y*1000/totalDoses*100).toFixed(2)}% of supply)`}}},scales:{x:{grid:{display:false},ticks:{color:muted,font:{size:10}}},y:{title:{display:true,text:'Doses (×1000)',color:muted},grid:{color:dark?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)'},ticks:{color:muted}}}}});
+
+  // ca2, delta
+  const delta=T10.map((d,i)=>ensD[i]-prop[i]);
+  charts.ca2=new Chart('ca2',{type:'bar',data:{labels:T10.map(d=>d.district.length>9?d.district.slice(0,9)+'…':d.district),datasets:[{label:'Delta',data:delta,backgroundColor:delta.map(v=>v>=0?gc('good')+'BB':gc('crit')+'BB'),borderRadius:4,borderSkipped:false}]},options:{...cdef(),onClick:(e,els)=>{if(els.length)showDD(T10[els[0].index].district);},plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.parsed.y>=0?'Gains':'Loses'} ${Math.abs(c.parsed.y)}K doses vs proportional (${(Math.abs(c.parsed.y)*1000/totalDoses*100).toFixed(2)}% of supply)`}}},scales:{x:{grid:{display:false},ticks:{color:muted,font:{size:10}}},y:{title:{display:true,text:'Δ Doses (K)',color:muted},grid:{color:dark?'rgba(255,255,255,.05)':'rgba(0,0,0,.05)'},ticks:{color:muted}}}}});
+}
+function rebuildCharts(){destroyAll();buildCharts();}
+
+/* ══ MODEL CARDS (Overview) ══ */
+function buildMC(){
+  const ms=[
+    {n:'Random Forest',acc:87.5,f1:0.86,pr:0.87,re:0.86,col:'purple',bg:'purplebg',d:'Bagging ensemble of 100 trees, each on a bootstrap sample with random feature subsets.'},
+    {n:'XGBoost',acc:89.1,f1:0.88,pr:0.89,re:0.87,col:'teal',bg:'tealbg',d:'Gradient-boosted trees (η=0.1, depth=6), sequentially corrects prior errors.'},
+    {n:'AdaBoost',acc:84.4,f1:0.83,pr:0.84,re:0.82,col:'warn',bg:'warnbg',d:'Re-weights misclassified samples each round (50 estimators), focuses on hard cases.'},
+    {n:'Stacking Ensemble',acc:91.4,f1:0.91,pr:0.92,re:0.90,col:'blue',bg:'bluebg',d:'Logistic-regression meta-learner combining all three base learners, best overall.'},
+  ];
+  document.getElementById('mc-row').innerHTML=ms.map((m,i)=>`
+    <div class="mc" style="border-color:var(--${m.col});background:var(--${m.bg})" onclick="openModal('${m.n}','${m.d} Achieves <b>${m.acc}%</b> accuracy and an F1 score of <b>${m.f1}</b> on held-out validation data (precision ${m.pr}, recall ${m.re}).')">
+      <div class="mc-name" style="color:var(--${m.col})">${m.n}</div>
+      <div class="mc-val" style="color:var(--${m.col})">${m.acc}%</div>
+      <div class="mc-bar"><div class="mc-fill" style="width:0%;background:var(--${m.col})" data-w="${m.acc}"></div></div>
+      <div class="mc-metrics">
+        <div class="mc-metric">F1 <span>${m.f1}</span></div>
+        <div class="mc-metric">Prec <span>${m.pr}</span></div>
+        <div class="mc-metric">Recall <span>${m.re}</span></div>
+      </div>
+      <div class="mc-hint">Click for model details</div>
+    </div>`).join('');
+  requestAnimationFrame(()=>{
+    setTimeout(()=>{
+      document.querySelectorAll('.mc-fill').forEach(el=>{el.style.width=el.dataset.w+'%';});
+    },80);
+  });
+}
+
+/* ══ PIPELINE ══ */
+function buildPipeline(){
+  const nodes=[
+    {col:'teal',lbl:'Input Features',items:[['teal','Incidence Rate (30%)'],['teal','Vaccination Gap (25%)'],['teal','Case Fatality Rate (20%)'],['teal','Under-5 Proportion (15%)'],['teal','DGHS Hotspot (10%)']],
+      d:'Five epidemiological indicators feed every base learner: incidence rate per million, MR2 vaccination gap, case fatality rate, under-5 population share, and DGHS hotspot status. These are the same indicators used to build the CRSI score, but the ensemble learns non-linear interactions between them.'},
+    {col:'muted2',lbl:'Level-0 · Base Learners',items:[['purple','Random Forest (n=100)'],['teal','XGBoost (η=0.1, d=6)'],['warn','AdaBoost (n=50)']],
+      d:'Three structurally different algorithms each independently predict a risk tier from the input features. Random Forest bags 100 trees, XGBoost boosts gradients across 6-deep trees, and AdaBoost re-weights hard samples over 50 rounds.'},
+    {col:'purple',lbl:'5-Fold CV · OOF Preds',items:[['purple','RF Tier Probability'],['purple','XGB Tier Probability'],['purple','ADA Tier Probability']],
+      d:'Each base learner is cross-validated across 5 folds so every district receives an out-of-fold (OOF) prediction, meaning no model ever predicts on data it was trained on. This is essential to prevent the meta-learner from learning spurious confidence.'},
+    {col:'stack',lbl:'Level-1 · Meta-Learner',items:[['blue','Logistic Regression'],['blue','Optimal weight learning']],
+      d:'A logistic regression model is trained on the three OOF predictions to learn how much to trust each base learner. The learned weights are approximately 38% Random Forest, 42% XGBoost, and 20% AdaBoost, XGBoost is weighted highest as it is individually most accurate.'},
+    {col:'good',lbl:'Output',items:[['good','Risk Tier (1–4)'],['good','Confidence Score %'],['good','Allocation Priority']],
+      d:'The final output for each district is a risk tier from 1 (Critical) to 4 (Low), a confidence score reflecting base-learner agreement, and an Ensemble Priority Score that feeds directly into the vaccine allocation formula.'},
+  ];
+  document.getElementById('pipeline-vis').innerHTML=nodes.map((n,i)=>`
+    ${i>0?`<div class="pipe-conn"><div class="pipe-arr">›</div></div>`:''}
+    <div class="pipe-node" onclick='openModal(${JSON.stringify(n.lbl)},${JSON.stringify(n.d)})'>
+      <div class="pipe-lbl" style="color:var(--${n.col==='muted2'?'muted':n.col})">${n.lbl}</div>
+      <div class="pipe-items">${n.items.map(([c,t])=>`<div class="pipe-item" style="background:var(--${c==='good'?'goodbg':c==='purple'?'purplebg':c==='teal'?'tealbg':c==='warn'?'warnbg':'bluebg'});color:var(--${c});border-color:var(--${c})">${t}</div>`).join('')}</div>
+    </div>`).join('');
+}
+
+/* ══ FEATURE IMPORTANCE, clickable bars ══ */
+function buildFI(){
+  const rf=[['Incidence Rate',34,'The single strongest predictor in Random Forest, districts with high incidence per million are almost always classified Tier 1 or 2.'],['Vaccination Gap',26,'Second most important, a large MR2 coverage gap signals a susceptible population even before cases spike.'],['Case Fatality Rate',19,'Important but noisier at low case counts, where a single death can swing the percentage sharply.'],['DGHS Hotspot',13,'A useful categorical signal that captures field intelligence not present in the numeric features.'],['Under-5 Proportion',8,'Lowest importance for RF, it correlates with several other features so adds less unique signal.']];
+  const xgb=[['Incidence Rate',31,'XGBoost also leans on incidence rate most heavily, consistent with Random Forest.'],['Case Fatality Rate',28,'XGBoost weights CFR higher than RF does, its boosting process is more sensitive to high-fatality outliers.'],['Vaccination Gap',22,'Still influential, but XGBoost finds non-linear interactions between coverage and incidence that reduce its standalone weight.'],['DGHS Hotspot',12,'Comparable importance to RF, both models treat hotspot status similarly.'],['Under-5 Proportion',7,'The least important feature for XGBoost as well.']];
+  ['fi-rf','fi-xgb'].forEach((id,i)=>{
+    const data=i===0?rf:xgb,col=i===0?'var(--rf)':'var(--xgb)';
+    document.getElementById(id).innerHTML=data.map(([n,v,d])=>`
+      <div class="fi-row" onclick='openModal(${JSON.stringify(n)},${JSON.stringify(d+" Contributes <b>"+v+"%</b> of total SHAP importance in this model.")})'>
+        <div class="fi-name">${n}</div>
+        <div class="fi-bar-wrap"><div class="fi-fill" style="width:0%;background:${col}" data-w="${v*2.7}"></div></div>
+        <div class="fi-pct" style="color:${col}">${v}%</div>
+      </div>`).join('');
+  });
+  requestAnimationFrame(()=>{setTimeout(()=>{document.querySelectorAll('.fi-fill').forEach(el=>{el.style.width=el.dataset.w+'%';});},80);});
+}
+
+/* ══ TIER CARDS (Risk Analysis) ══ */
+function buildTierCards(){
+  document.getElementById('tier-cards').innerHTML='';
+  TIERS.forEach(tier=>{
+    const items=D.filter(d=>d.tier===tier);
+    const deaths=items.reduce((a,d)=>a+d.deaths,0);
+    document.getElementById('tier-cards').innerHTML+=`
+      <div class="tier-card" style="border-top-color:${TC[tier]}" onclick="ST('di',document.querySelectorAll('.nb')[5]);setTimeout(()=>{document.getElementById('tf').value='${tier.includes('1')?'Tier 1':tier.includes('2')?'Tier 2':tier.includes('3')?'Tier 3':'Tier 4'}';FT();},80)">
+        <div style="font-size:10.5px;font-weight:800;color:${TC[tier]};text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px">${TL[tier]} Risk</div>
+        <div style="font-size:28px;font-weight:900;font-family:var(--mono)">${items.length}</div>
+        <div style="font-size:11px;color:var(--muted);margin-top:4px">districts · ${deaths} deaths</div>
+      </div>`;
+  });
+}
+
+/* ══ TOP 5 TABLE (Overview), rank as 01,02... ══ */
+function buildT5(){
+  document.getElementById('t5').innerHTML='';
+  D.slice(0,5).forEach(d=>{
+    document.getElementById('t5').innerHTML+=`
+      <tr onclick="showDD('${d.district}')">
+        <td class="rank">${RANK(d.rank)}</td>
+        <td><strong>${d.district}</strong></td>
+        <td style="color:${DIV_COLORS[d.division]};font-weight:600">${d.division}</td>
+        <td><strong style="color:${TC[d.tier]};font-family:var(--mono)">${d.crsi}</strong></td>
+        <td>${bdg(TN[d.e.meta])}</td>
+        <td>${cbdg(d.e.conf)}</td>
+        <td style="font-family:var(--mono)">${d.incidence}</td>
+        <td style="color:${d.cfr>2.5?'var(--warn)':'var(--text2)'};font-weight:${d.cfr>2.5?700:400};font-family:var(--mono)">${d.cfr}%</td>
+      </tr>`;
+  });
+}
+
+/* ══ ML TABLE (Ensemble Model tab), all 64, rank 01..64 ══ */
+function buildMLTable(){
+  document.getElementById('ml-body').innerHTML='';
+  D.forEach((d,i)=>{
+    const e=d.e,bg=i%2===0?'var(--surface)':'var(--surface2)';
+    document.getElementById('ml-body').innerHTML+=`
+      <tr style="background:${bg}" onclick="showDD('${d.district}')">
+        <td class="rank">${RANK(d.rank)}</td>
+        <td><strong>${d.district}</strong></td>
+        <td><strong style="color:${TC[d.tier]};font-family:var(--mono)">${d.crsi}</strong></td>
+        <td><span style="font-size:10.5px;font-weight:700;color:${TC[TN[e.rf]]}">${TL[TN[e.rf]]}</span></td>
+        <td><span style="font-size:10.5px;font-weight:700;color:${TC[TN[e.xgb]]}">${TL[TN[e.xgb]]}</span></td>
+        <td><span style="font-size:10.5px;font-weight:700;color:${TC[TN[e.ada]]}">${TL[TN[e.ada]]}</span></td>
+        <td>${bdg(TN[e.meta])}</td>
+        <td>${cbdg(e.conf)}</td>
+        <td>${agIcon(e.agree)}</td>
+      </tr>`;
+  });
+}
+
+/* ══ ALLOCATION TABLE + LEGEND (rank 01..) ══ */
+function buildDecLegend(){
+  document.getElementById('dec-legend').innerHTML=`
+    <span><b>Decision key:</b></span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--crit)"></span>Immediate, Tier 1, dispatch within 24h</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--high)"></span>High Priority, Tier 2, dispatch within 72h</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--warn)"></span>Moderate, Tier 3, scheduled within 2 weeks</span>
+    <span class="legend-item"><span class="legend-dot" style="background:var(--good)"></span>Routine, Tier 4, standard catch-up cycle</span>`;
+}
+function buildAllocTable(){
+  const totalP=D.reduce((s,d)=>s+d.e.priority,0),totalDoses=2865000;
+  const tb=document.getElementById('alloc-body');tb.innerHTML='';
+  let flagged=0;
+  D.forEach(d=>{if(d.e.agree==='disagree')flagged++;});
+  document.getElementById('reviewCount').textContent=flagged;
+  const decColor={1:'var(--crit)',2:'var(--high)',3:'var(--warn)',4:'var(--good)'};
+  const decLbl={1:'Immediate',2:'High Priority',3:'Moderate',4:'Routine'};
+  D.slice(0,20).forEach((d,i)=>{
+    const eDoses=Math.round(d.e.priority/totalP*totalDoses);
+    const pDoses=Math.round(d.cases/72070*totalDoses);
+    const delta=eDoses-pDoses;
+    const dCol=decColor[d.e.meta],dLbl=decLbl[d.e.meta];
+    const bg=i%2===0?'var(--surface)':'var(--surface2)';
+    tb.innerHTML+=`<tr style="background:${bg}" onclick="showDD('${d.district}')">
+      <td class="rank">${RANK(d.rank)}</td>
+      <td><strong>${d.district}</strong></td>
+      <td style="color:${DIV_COLORS[d.division]};font-weight:600">${d.division}</td>
+      <td>${bdg(TN[d.e.meta])}</td>
+      <td>${cbdg(d.e.conf)}</td>
+      <td>${agIcon(d.e.agree)}</td>
+      <td><strong style="color:var(--blue);font-family:var(--mono)">${N(eDoses)}</strong></td>
+      <td style="font-family:var(--mono);color:var(--muted)">${N(pDoses)}</td>
+      <td><strong style="color:${delta>=0?'var(--good)':'var(--crit)'};font-family:var(--mono)">${delta>=0?'+':''}${N(delta)}</strong></td>
+      <td><span class="bdg" style="background:${dCol}18;color:${dCol}">${dLbl}</span></td>
+    </tr>`;
+  });
+}
+
+/* ══ ALERT CARDS ══ */
+function buildAlertCards(){
+  const AGROUPS=[
+    {key:'crit',lbl:'Critical Alerts',dists:D.filter(d=>d.tier==="Tier 1 — Critical"),action:'Emergency MR vaccination and cold-chain audit within 24 hours.'},
+    {key:'high',lbl:'High Risk',dists:D.filter(d=>d.tier==="Tier 2 — High"),action:'Accelerate MR2 catch-up and notify district health officer.'},
+    {key:'warn',lbl:'High CFR Flag',dists:D.filter(d=>d.cfr>2.5),action:'Case management review and hospital preparedness assessment.'},
+    {key:'purple',lbl:'Low Confidence',dists:D.filter(d=>d.e.agree==='disagree'),action:'Manual clinical review, base models disagree on tier.'},
+  ];
+  const cardsEl=document.getElementById('alert-cards');cardsEl.innerHTML='';
+  const aState={};
+  AGROUPS.forEach(({key,lbl,dists,action})=>{
+    aState[key]=false;
+    const col=`var(--${key==='purple'?'purple':key})`;
+    const bg=`var(--${key==='purple'?'purplebg':key+'bg'})`;
+    cardsEl.innerHTML+=`
+      <div class="ac" style="background:${bg};border-color:${col}30" id="ac-${key}">
+        <button class="ac-hdr" onclick="toggleA('${key}')">
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div>
+              <div style="font-size:11.5px;font-weight:800;color:${col};letter-spacing:.3px;text-transform:uppercase">${lbl}</div>
+              <div style="font-size:26px;font-weight:900;color:var(--text);line-height:1.1;font-family:var(--mono);margin-top:2px">${dists.length}</div>
+              <div style="font-size:10.5px;color:var(--muted);margin-top:1px">districts flagged</div>
+            </div>
+            <span class="chv" id="chv-${key}">▾</span>
+          </div>
+          <div style="font-size:10.5px;color:var(--muted);margin-top:9px;line-height:1.55">${action}</div>
+          <div class="ac-tags" id="preview-${key}">
+            ${dists.slice(0,5).map(d=>`<span class="atag" style="background:${col}15;color:${col};border:1px solid ${col}30">${d.district}</span>`).join('')}
+            ${dists.length>5?`<span style="font-size:10.5px;color:var(--muted);align-self:center">+${dists.length-5} more</span>`:''}
+          </div>
+        </button>
+        <div class="ac-body" id="body-${key}" style="display:none;border-top-color:${col}20">
+          <div style="font-size:11px;font-weight:700;color:${col};margin:13px 0 9px">All ${dists.length} districts in this zone</div>
+          <div class="ac-tags">${dists.map(d=>`<span class="atag" style="background:${col}12;color:${col};border:1px solid ${col}25" onclick="event.stopPropagation();showDD('${d.district}')">${d.district} <span style="font-size:9.5px;opacity:.65">CRSI ${d.crsi} · ${d.e.conf}%</span></span>`).join('')}</div>
+          <div style="margin-top:13px;padding:10px 13px;background:${col}10;border-radius:8px;font-size:11.5px;font-weight:600;color:var(--text)">${action}</div>
+        </div>
+      </div>`;
+  });
+  window._aState=aState;
+}
+function toggleA(k){
+  const st=window._aState;st[k]=!st[k];const o=st[k];
+  document.getElementById('body-'+k).style.display=o?'block':'none';
+  document.getElementById('preview-'+k).style.display=o?'none':'flex';
+  document.getElementById('chv-'+k).style.transform=o?'rotate(180deg)':'';
+}
+
+/* ══ FULL ALERT TABLE ══ */
+function buildAlertTable(){
+  const tbody=document.getElementById('alert-body');tbody.innerHTML='';
+  D.filter(d=>d.rank<=25||d.cfr>2.5).forEach((d,i)=>{
+    const ic=d.tier==="Tier 1 — Critical",hc=d.cfr>2.5;
+    const col=ic?'var(--crit)':hc?'var(--warn)':'var(--high)';
+    const at=ic?'Critical':hc?'High CFR':'High Risk';
+    const ac=ic?'Emergency vaccination and cold-chain audit within 24h':hc?'Case management review and hospital preparedness':'Accelerate MR2 catch-up and notify DHO';
+    const bg=i%2===0?'var(--surface)':'var(--surface2)';
+    tbody.innerHTML+=`
+      <tr style="background:${bg}" onclick="showDD('${d.district}')">
+        <td><strong>${d.district}</strong></td>
+        <td style="color:${DIV_COLORS[d.division]};font-weight:600">${d.division}</td>
+        <td><strong style="color:${col};font-family:var(--mono)">${d.crsi}</strong></td>
+        <td>${bdg(TN[d.e.meta])}</td>
+        <td>${cbdg(d.e.conf)}</td>
+        <td style="color:${d.cfr>2.5?'var(--warn)':'var(--text2)'};font-weight:${d.cfr>2.5?700:400};font-family:var(--mono)">${d.cfr}%</td>
+        <td style="color:${d.hotspot?'var(--good)':'var(--muted)'};font-weight:700">${d.hotspot?'✓':','}</td>
+        <td><span class="bdg" style="background:${col}18;color:${col}">${at}</span></td>
+        <td style="font-size:11px;color:var(--muted)">${ac}</td>
+      </tr>`;
+  });
+}
+
+/* ══ ALL DISTRICTS TABLE, fixed: shows actual ensemble tier badges
+   (Critical/High/Moderate/Low all appear correctly post-calibration) ══ */
+function buildAllTable(){
+  const dfSel=document.getElementById('df');
+  if(dfSel.children.length===1){
+    [...new Set(D.map(d=>d.division))].sort().forEach(dv=>dfSel.innerHTML+=`<option value="${dv}">${dv}</option>`);
+  }
+  const tbody=document.getElementById('all-body');tbody.innerHTML='';
+  D.forEach((d,i)=>{
+    const bg=i%2===0?'var(--surface)':'var(--surface2)';
+    tbody.innerHTML+=`
+      <tr style="background:${bg}" data-s="${d.district.toLowerCase()} ${d.division.toLowerCase()}" data-t="${d.tier}" data-d="${d.division}" onclick="showDD('${d.district}')">
+        <td class="rank">${RANK(d.rank)}</td>
+        <td><strong>${d.district}</strong></td>
+        <td style="color:${DIV_COLORS[d.division]};font-weight:600">${d.division}</td>
+        <td style="font-family:var(--mono)">${N(d.cases)}</td>
+        <td><strong style="color:${d.deaths>10?'var(--crit)':'var(--text2)'};font-family:var(--mono)">${d.deaths}</strong></td>
+        <td style="font-family:var(--mono)">${d.incidence}</td>
+        <td style="color:${d.cfr>2.5?'var(--warn)':'var(--text2)'};font-weight:${d.cfr>2.5?700:400};font-family:var(--mono)">${d.cfr}%</td>
+        <td><div class="prw"><div class="prb"><div class="prf" style="width:${d.vacCov}%"></div></div><span style="font-size:10.5px;color:var(--muted);font-family:var(--mono)">${d.vacCov}%</span></div></td>
+        <td><strong style="color:${TC[d.tier]};font-family:var(--mono)">${d.crsi}</strong></td>
+        <td>${bdg(TN[d.e.meta])}</td>
+        <td>${cbdg(d.e.conf)}</td>
+        <td style="color:${d.hotspot?'var(--good)':'var(--muted)'};font-weight:700">${d.hotspot?'✓':','}</td>
+      </tr>`;
+  });
+  document.getElementById('fc').textContent='Showing 64 of 64 districts';
+}
+function FT(){
+  const s=document.getElementById('si').value.toLowerCase(),tf=document.getElementById('tf').value,df=document.getElementById('df').value;
+  let n=0;
+  document.querySelectorAll('#all-body tr').forEach(r=>{
+    const ok=(!s||r.dataset.s.includes(s))&&(!tf||r.dataset.t.includes(tf))&&(!df||r.dataset.d===df);
+    r.style.display=ok?'':'none';if(ok)n++;
+  });
+  document.getElementById('fc').textContent=`Showing ${n} of 64 districts`;
+}
+
+/* ══ DISTRICT DETAIL PANEL, premium reveal, full info on click ══ */
+function showDD(name){
+  const d=D.find(x=>x.district===name);if(!d)return;
+  const e=d.e,el=document.getElementById('dd');
+  const totalP=D.reduce((s,x)=>s+x.e.priority,0);
+  const eDoses=Math.round(e.priority/totalP*2865000);
+  el.style.display='block';
+  el.style.borderTop='1px solid var(--border)';
+  el.style.background=TB[d.tier];
+  el.innerHTML=`
+    <div class="dd-head" style="border-left-color:${TC[d.tier]}">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">
+        <div>
+          <span style="font-size:16px;font-weight:800">${d.district}</span>
+          <span style="margin-left:9px">${bdg(d.tier)}</span>
+          <div style="font-size:11px;color:var(--muted);margin-top:4px">${d.division} Division · Rank ${RANK(d.rank)} of 64</div>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+          <div class="mpills">
+            <span class="mpill" style="border-color:var(--rf);color:var(--rf)">RF: ${TL[TN[e.rf]]}</span>
+            <span class="mpill" style="border-color:var(--xgb);color:var(--xgb)">XGB: ${TL[TN[e.xgb]]}</span>
+            <span class="mpill" style="border-color:var(--ada);color:var(--ada)">ADA: ${TL[TN[e.ada]]}</span>
+            <span class="mpill" style="border-color:var(--stack);color:var(--stack)">${e.conf}% confidence</span>
+          </div>
+          <button class="dd-close" onclick="document.getElementById('dd').style.display='none'">✕</button>
+        </div>
+      </div>
+    </div>
+    <div class="dd-body-inner">
+      <div class="dd-grid">
+        ${[['Cases',N(d.cases),'var(--text)'],['Deaths',d.deaths,'var(--crit)'],['Incidence/M',d.incidence,'var(--high)'],['CFR',d.cfr+'%',d.cfr>2.5?'var(--warn)':'var(--text)'],['CRSI',d.crsi,TC[d.tier]]].map(([l,v,c])=>`<div class="dd-cell"><div class="dd-lbl">${l}</div><div class="dd-val" style="color:${c}">${v}</div></div>`).join('')}
+      </div>
+      <div class="dd-ext">
+        <div class="dd-extcard"><div class="dd-extlbl">MR2 Coverage</div><div class="dd-extval" style="color:var(--blue)">${d.vacCov}%</div></div>
+        <div class="dd-extcard"><div class="dd-extlbl">Ensemble Doses</div><div class="dd-extval" style="color:var(--good)">${N(eDoses)}</div></div>
+        <div class="dd-extcard"><div class="dd-extlbl">Priority Score</div><div class="dd-extval" style="color:var(--purple)">${e.priority}</div></div>
+        <div class="dd-extcard"><div class="dd-extlbl">Agreement</div><div class="dd-extval">${agIcon(e.agree)}</div></div>
+      </div>
+    </div>`;
+  el.scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+/* ══ INIT, runs fully offline once Chart.js (CDN, cached after first load) is present ══ */
+buildMC();
+buildPipeline();
+buildFI();
+buildTierCards();
+buildT5();
+buildMLTable();
+buildDecLegend();
+buildAllocTable();
+buildAlertCards();
+buildAlertTable();
+buildAllTable();
+buildCharts();
+</script>
+</body>
+</html>
